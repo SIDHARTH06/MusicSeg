@@ -1,0 +1,66 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 291.1205215419501 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "Kannodu" 
+        xmin = 0 
+        xmax = 291.1205215419501 
+        intervals: size = 13 
+        intervals [1]:
+            xmin = 0 
+            xmax = 29.81810746595673 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 29.81810746595673 
+            xmax = 44.66100164708494 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 44.66100164708494 
+            xmax = 59.514440511572495 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 59.514440511572495 
+            xmax = 97.35189866535536 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 97.35189866535536 
+            xmax = 141.87285792438524 
+            text = "charanam" 
+        intervals [6]:
+            xmin = 141.87285792438524 
+            xmax = 155.8444088485533 
+            text = "pallavi" 
+        intervals [7]:
+            xmin = 155.8444088485533 
+            xmax = 176.59427648088024 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 176.59427648088024 
+            xmax = 228.51949472176463 
+            text = "charanam" 
+        intervals [9]:
+            xmin = 228.51949472176463 
+            xmax = 237.16419949432282 
+            text = "pallavi" 
+        intervals [10]:
+            xmin = 237.16419949432282 
+            xmax = 254.8796739466063 
+            text = "BGM" 
+        intervals [11]:
+            xmin = 254.8796739466063 
+            xmax = 269.7118425780067 
+            text = "pallavi" 
+        intervals [12]:
+            xmin = 269.7118425780067 
+            xmax = 285.17560209947055 
+            text = "anupallavi" 
+        intervals [13]:
+            xmin = 285.17560209947055 
+            xmax = 291.1205215419501 
+            text = "" 

@@ -1,0 +1,74 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 337.5662358276644 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "urvashi" 
+        xmin = 0 
+        xmax = 337.5662358276644 
+        intervals: size = 15 
+        intervals [1]:
+            xmin = 0 
+            xmax = 38.9030469777706 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 38.9030469777706 
+            xmax = 69.43780375436239 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 69.43780375436239 
+            xmax = 84.29599456525614 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 84.29599456525614 
+            xmax = 89.97266936633146 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 89.97266936633146 
+            xmax = 99.88653220127959 
+            text = "charanam" 
+        intervals [6]:
+            xmin = 99.88653220127959 
+            xmax = 109.6723458365452 
+            text = "anupallavi" 
+        intervals [7]:
+            xmin = 109.6723458365452 
+            xmax = 157.94089218415715 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 157.94089218415715 
+            xmax = 198.6616951452209 
+            text = "charanam" 
+        intervals [9]:
+            xmin = 198.6616951452209 
+            xmax = 208.10552889109687 
+            text = "anupallavi" 
+        intervals [10]:
+            xmin = 208.10552889109687 
+            xmax = 250.43317830668857 
+            text = "BGM" 
+        intervals [11]:
+            xmin = 250.43317830668857 
+            xmax = 291.6425287784106 
+            text = "charanam" 
+        intervals [12]:
+            xmin = 291.6425287784106 
+            xmax = 301.94106632423313 
+            text = "pallavi" 
+        intervals [13]:
+            xmin = 301.94106632423313 
+            xmax = 311.8669504197007 
+            text = "anupallavi" 
+        intervals [14]:
+            xmin = 311.8669504197007 
+            xmax = 316.1712296801709 
+            text = "BGM" 
+        intervals [15]:
+            xmin = 316.1712296801709 
+            xmax = 337.5662358276644 
+            text = "charanam" 

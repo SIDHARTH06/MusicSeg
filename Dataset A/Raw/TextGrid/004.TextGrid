@@ -1,0 +1,70 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 325.0535827664399 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "KannumKannumNokia" 
+        xmin = 0 
+        xmax = 325.0535827664399 
+        intervals: size = 14 
+        intervals [1]:
+            xmin = 0 
+            xmax = 23.88723395706194 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 23.88723395706194 
+            xmax = 38.49818494117555 
+            text = "Pallavi" 
+        intervals [3]:
+            xmin = 38.49818494117555 
+            xmax = 42.979293974300084 
+            text = "BGM" 
+        intervals [4]:
+            xmin = 42.979293974300084 
+            xmax = 67.52551858988083 
+            text = "anupallavi" 
+        intervals [5]:
+            xmin = 67.52551858988083 
+            xmax = 74.71702604992961 
+            text = "pallavi" 
+        intervals [6]:
+            xmin = 74.71702604992961 
+            xmax = 111.15991044722696 
+            text = "BGM" 
+        intervals [7]:
+            xmin = 111.15991044722696 
+            xmax = 162.7370351781406 
+            text = "charanam" 
+        intervals [8]:
+            xmin = 162.7370351781406 
+            xmax = 169.67358060271704 
+            text = "pallavi" 
+        intervals [9]:
+            xmin = 169.67358060271704 
+            xmax = 206.1364443115289 
+            text = "BGM" 
+        intervals [10]:
+            xmin = 206.1364443115289 
+            xmax = 257.9349601438566 
+            text = "charanam" 
+        intervals [11]:
+            xmin = 257.9349601438566 
+            xmax = 274.0258677413943 
+            text = "pallavi" 
+        intervals [12]:
+            xmin = 274.0258677413943 
+            xmax = 297.6076696339557 
+            text = "anupallavi" 
+        intervals [13]:
+            xmin = 297.6076696339557 
+            xmax = 304.57241760018303 
+            text = "pallavi" 
+        intervals [14]:
+            xmin = 304.57241760018303 
+            xmax = 325.0535827664399 
+            text = "BGM" 

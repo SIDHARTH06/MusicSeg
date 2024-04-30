@@ -1,0 +1,78 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 329.8862358276644 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "AzhaguMalaraada" 
+        xmin = 0 
+        xmax = 329.8862358276644 
+        intervals: size = 16 
+        intervals [1]:
+            xmin = 0 
+            xmax = 1.9401159915023354 
+            text = "" 
+        intervals [2]:
+            xmin = 1.9401159915023354 
+            xmax = 24.577228723831716 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 24.577228723831716 
+            xmax = 45.69690703453652 
+            text = "pallavi" 
+        intervals [4]:
+            xmin = 45.69690703453652 
+            xmax = 56.24923431525865 
+            text = "anupallavi" 
+        intervals [5]:
+            xmin = 56.24923431525865 
+            xmax = 63.18675053412232 
+            text = "pallavi" 
+        intervals [6]:
+            xmin = 63.18675053412232 
+            xmax = 104.78004449404573 
+            text = "BGM" 
+        intervals [7]:
+            xmin = 104.78004449404573 
+            xmax = 142.97576978556654 
+            text = "charanam" 
+        intervals [8]:
+            xmin = 142.97576978556654 
+            xmax = 149.92222772619468 
+            text = "pallavi" 
+        intervals [9]:
+            xmin = 149.92222772619468 
+            xmax = 160.22968317429385 
+            text = "anupallavi" 
+        intervals [10]:
+            xmin = 160.22968317429385 
+            xmax = 167.16183607227964 
+            text = "pallavi" 
+        intervals [11]:
+            xmin = 167.16183607227964 
+            xmax = 201.62007490603494 
+            text = "BGM" 
+        intervals [12]:
+            xmin = 201.62007490603494 
+            xmax = 249.85318218251075 
+            text = "charanam" 
+        intervals [13]:
+            xmin = 249.85318218251075 
+            xmax = 256.8351705750743 
+            text = "pallavi" 
+        intervals [14]:
+            xmin = 256.8351705750743 
+            xmax = 267.16233240770987 
+            text = "anupallavi" 
+        intervals [15]:
+            xmin = 267.16233240770987 
+            xmax = 274.021048849464 
+            text = "pallavi" 
+        intervals [16]:
+            xmin = 274.021048849464 
+            xmax = 329.8862358276644 
+            text = "BGM" 

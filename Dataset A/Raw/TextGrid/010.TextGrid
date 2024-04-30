@@ -1,0 +1,66 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 283.38827664399093 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "ThulliThulli" 
+        xmin = 0 
+        xmax = 283.38827664399093 
+        intervals: size = 13 
+        intervals [1]:
+            xmin = 0 
+            xmax = 34.021259126896595 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 34.021259126896595 
+            xmax = 54.07948670173486 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 54.07948670173486 
+            xmax = 70.16829096308683 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 70.16829096308683 
+            xmax = 79.85637021728868 
+            text = "pallavi" 
+        intervals [5]:
+            xmin = 79.85637021728868 
+            xmax = 101.15017720021248 
+            text = "BGM" 
+        intervals [6]:
+            xmin = 101.15017720021248 
+            xmax = 148.0923083995463 
+            text = "charanam " 
+        intervals [7]:
+            xmin = 148.0923083995463 
+            xmax = 158.49704309422583 
+            text = "anupallavi" 
+        intervals [8]:
+            xmin = 158.49704309422583 
+            xmax = 189.8011435539841 
+            text = "BGM" 
+        intervals [9]:
+            xmin = 189.8011435539841 
+            xmax = 236.69934218901977 
+            text = "charanam" 
+        intervals [10]:
+            xmin = 236.69934218901977 
+            xmax = 247.2403875092967 
+            text = "anupallavi" 
+        intervals [11]:
+            xmin = 247.2403875092967 
+            xmax = 258.016143716144 
+            text = "BGM" 
+        intervals [12]:
+            xmin = 258.016143716144 
+            xmax = 278.46304044360437 
+            text = "pallavi" 
+        intervals [13]:
+            xmin = 278.46304044360437 
+            xmax = 283.38827664399093 
+            text = "" 

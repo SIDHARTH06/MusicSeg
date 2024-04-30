@@ -1,0 +1,62 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 267.1401133786848 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "AdedaMazheda" 
+        xmin = 0 
+        xmax = 267.1401133786848 
+        intervals: size = 12 
+        intervals [1]:
+            xmin = 0 
+            xmax = 25.3601586409147 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 25.3601586409147 
+            xmax = 41.35656820589548 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 41.35656820589548 
+            xmax = 65.35207545470831 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 65.35207545470831 
+            xmax = 72.7234087232351 
+            text = "pallavi" 
+        intervals [5]:
+            xmin = 72.7234087232351 
+            xmax = 105.46307594308077 
+            text = "BGM" 
+        intervals [6]:
+            xmin = 105.46307594308077 
+            xmax = 136.02061358669596 
+            text = "charanam" 
+        intervals [7]:
+            xmin = 136.02061358669596 
+            xmax = 173.40241881089045 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 173.40241881089045 
+            xmax = 205.3814929560464 
+            text = "charanam" 
+        intervals [9]:
+            xmin = 205.3814929560464 
+            xmax = 221.38725585539078 
+            text = "pallavi" 
+        intervals [10]:
+            xmin = 221.38725585539078 
+            xmax = 244.8649881669067 
+            text = "charanam" 
+        intervals [11]:
+            xmin = 244.8649881669067 
+            xmax = 262.47669409850806 
+            text = "BGM" 
+        intervals [12]:
+            xmin = 262.47669409850806 
+            xmax = 267.1401133786848 
+            text = "" 

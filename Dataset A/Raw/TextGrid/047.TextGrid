@@ -1,0 +1,58 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 270.1180725623583 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "Kannane" 
+        xmin = 0 
+        xmax = 270.1180725623583 
+        intervals: size = 11 
+        intervals [1]:
+            xmin = 0 
+            xmax = 35.7500325460741 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 35.7500325460741 
+            xmax = 50.49822275807578 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 50.49822275807578 
+            xmax = 71.93747301949492 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 71.93747301949492 
+            xmax = 102.60926167696384 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 102.60926167696384 
+            xmax = 117.1733322142769 
+            text = "pallavi" 
+        intervals [6]:
+            xmin = 117.1733322142769 
+            xmax = 147.38725148761594 
+            text = "BGM" 
+        intervals [7]:
+            xmin = 147.38725148761594 
+            xmax = 191.63942755558293 
+            text = "charanam" 
+        intervals [8]:
+            xmin = 191.63942755558293 
+            xmax = 206.48801116549092 
+            text = "pallavi" 
+        intervals [9]:
+            xmin = 206.48801116549092 
+            xmax = 227.81329813132038 
+            text = "anupallavi" 
+        intervals [10]:
+            xmin = 227.81329813132038 
+            xmax = 265.449661012815 
+            text = "BGM" 
+        intervals [11]:
+            xmin = 265.449661012815 
+            xmax = 270.1180725623583 
+            text = "" 

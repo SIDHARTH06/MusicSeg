@@ -1,0 +1,62 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 222.49684807256236 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "Poivamagale" 
+        xmin = 0 
+        xmax = 222.49684807256236 
+        intervals: size = 12 
+        intervals [1]:
+            xmin = 0 
+            xmax = 28.971941795858676 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 28.971941795858676 
+            xmax = 42.341961995222974 
+            text = "Pallavi" 
+        intervals [3]:
+            xmin = 42.341961995222974 
+            xmax = 52.96643722609386 
+            text = "BGM" 
+        intervals [4]:
+            xmin = 52.96643722609386 
+            xmax = 74.20632737430843 
+            text = "Anupallavi" 
+        intervals [5]:
+            xmin = 74.20632737430843 
+            xmax = 87.58771013563721 
+            text = "pallavi" 
+        intervals [6]:
+            xmin = 87.58771013563721 
+            xmax = 118.95348115191736 
+            text = "BGM" 
+        intervals [7]:
+            xmin = 118.95348115191736 
+            xmax = 139.87989021461442 
+            text = "charanam" 
+        intervals [8]:
+            xmin = 139.87989021461442 
+            xmax = 153.0895251140467 
+            text = "pallavi" 
+        intervals [9]:
+            xmin = 153.0895251140467 
+            xmax = 184.73738821508314 
+            text = "BGM" 
+        intervals [10]:
+            xmin = 184.73738821508314 
+            xmax = 205.50915207112448 
+            text = "charanam" 
+        intervals [11]:
+            xmin = 205.50915207112448 
+            xmax = 220.14188374719762 
+            text = "pallavi" 
+        intervals [12]:
+            xmin = 220.14188374719762 
+            xmax = 222.49684807256236 
+            text = "" 

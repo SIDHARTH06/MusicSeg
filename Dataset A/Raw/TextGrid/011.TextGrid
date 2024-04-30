@@ -1,0 +1,66 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 378.1082766439909 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "VarahaNadhikarai" 
+        xmin = 0 
+        xmax = 378.1082766439909 
+        intervals: size = 13 
+        intervals [1]:
+            xmin = 0 
+            xmax = 46.39014763723623 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 46.39014763723623 
+            xmax = 86.56427147830016 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 86.56427147830016 
+            xmax = 96.95888020394474 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 96.95888020394474 
+            xmax = 108.94546364615488 
+            text = "pallavi" 
+        intervals [5]:
+            xmin = 108.94546364615488 
+            xmax = 140.0191767638615 
+            text = "BGM" 
+        intervals [6]:
+            xmin = 140.0191767638615 
+            xmax = 188.61135687474197 
+            text = "charanam" 
+        intervals [7]:
+            xmin = 188.61135687474197 
+            xmax = 198.96637921467644 
+            text = "anupallavi" 
+        intervals [8]:
+            xmin = 198.96637921467644 
+            xmax = 227.91593599565599 
+            text = "pallavi" 
+        intervals [9]:
+            xmin = 227.91593599565599 
+            xmax = 271.8957718556605 
+            text = "BGM" 
+        intervals [10]:
+            xmin = 271.8957718556605 
+            xmax = 315.7964186492637 
+            text = "charanam" 
+        intervals [11]:
+            xmin = 315.7964186492637 
+            xmax = 326.1545552852955 
+            text = "anupallavi" 
+        intervals [12]:
+            xmin = 326.1545552852955 
+            xmax = 364.9990114301735 
+            text = "pallavi" 
+        intervals [13]:
+            xmin = 364.9990114301735 
+            xmax = 378.1082766439909 
+            text = "BGM" 

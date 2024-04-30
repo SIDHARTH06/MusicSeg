@@ -1,0 +1,38 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 89.5597052154195 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "YamunaAtrile" 
+        xmin = 0 
+        xmax = 89.5597052154195 
+        intervals: size = 6 
+        intervals [1]:
+            xmin = 0 
+            xmax = 8.190186881461226 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 8.190186881461226 
+            xmax = 23.143098368367056 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 23.143098368367056 
+            xmax = 37.83588678648779 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 37.83588678648779 
+            xmax = 63.656582745720286 
+            text = "charanam" 
+        intervals [5]:
+            xmin = 63.656582745720286 
+            xmax = 84.01171191758927 
+            text = "pallavi" 
+        intervals [6]:
+            xmin = 84.01171191758927 
+            xmax = 89.5597052154195 
+            text = "" 

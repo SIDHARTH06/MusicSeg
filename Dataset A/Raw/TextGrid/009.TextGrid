@@ -1,0 +1,62 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 360.0837868480726 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "Malargale" 
+        xmin = 0 
+        xmax = 360.0837868480726 
+        intervals: size = 12 
+        intervals [1]:
+            xmin = 0 
+            xmax = 31.59011957372506 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 31.59011957372506 
+            xmax = 42.12752371018473 
+            text = "Pallavi" 
+        intervals [3]:
+            xmin = 42.12752371018473 
+            xmax = 63.498800683426424 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 63.498800683426424 
+            xmax = 112.84950716273497 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 112.84950716273497 
+            xmax = 165.22692868575373 
+            text = "charanam" 
+        intervals [6]:
+            xmin = 165.22692868575373 
+            xmax = 175.9217824702847 
+            text = "pallavi" 
+        intervals [7]:
+            xmin = 175.9217824702847 
+            xmax = 196.61367031721332 
+            text = "anupallavi" 
+        intervals [8]:
+            xmin = 196.61367031721332 
+            xmax = 254.2197281934347 
+            text = "BGM" 
+        intervals [9]:
+            xmin = 254.2197281934347 
+            xmax = 306.52760760474365 
+            text = "charanam" 
+        intervals [10]:
+            xmin = 306.52760760474365 
+            xmax = 317.09324082929913 
+            text = "pallavi" 
+        intervals [11]:
+            xmin = 317.09324082929913 
+            xmax = 338.06734198428177 
+            text = "anupallavi" 
+        intervals [12]:
+            xmin = 338.06734198428177 
+            xmax = 360.0837868480726 
+            text = "BGM" 

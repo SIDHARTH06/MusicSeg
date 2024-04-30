@@ -1,0 +1,38 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 323.7213378684807 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "ChinnanchiruKiliye" 
+        xmin = 0 
+        xmax = 323.7213378684807 
+        intervals: size = 6 
+        intervals [1]:
+            xmin = 0 
+            xmax = 7.365061536730864 
+            text = "" 
+        intervals [2]:
+            xmin = 7.365061536730864 
+            xmax = 61.892140325144766 
+            text = "pallavi" 
+        intervals [3]:
+            xmin = 61.892140325144766 
+            xmax = 93.58803046001648 
+            text = "anupallavi" 
+        intervals [4]:
+            xmin = 93.58803046001648 
+            xmax = 125.71175220930957 
+            text = "pallavi" 
+        intervals [5]:
+            xmin = 125.71175220930957 
+            xmax = 314.1325298466043 
+            text = "charanam" 
+        intervals [6]:
+            xmin = 314.1325298466043 
+            xmax = 323.7213378684807 
+            text = "" 
