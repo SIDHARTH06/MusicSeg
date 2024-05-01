@@ -37,6 +37,9 @@ class ThreeTierEnsemble():
         self.model30.to(self.device)
         self.model10.to(self.device)
         self.model1.to(self.device)
+    def pad_array(self,array):
+        padded_array = np.pad(array, ((0, 13 - array.shape[0]), (0, 13 - array.shape[1])), mode='constant', constant_values=0)
+        return padded_array
     def extract_mfcc(self,y, sr=22050, n_mfcc=13, n_fft=2048, hop_length=512, duration=5):
         num_segments = int(len(y) / (duration * sr))
         mfccs = []
@@ -49,16 +52,53 @@ class ThreeTierEnsemble():
         return np.stack(mfccs, axis=0)
     def predict(self,y):
         x = self.extract_mfcc(y,duration=30)
-        out30 = list(self.model30(torch.tensor(x,dtype=torch.float).to(self.device).detach().cpu().numpy()[0] >= THRESHOLD))
-        nextinp = []
+        x= self.pad_array(x)
+        x=np.reshape(x,(1,x.shape[0],x.shape[1]))
+        out30 = self.model30(torch.tensor(x,dtype=torch.float).to(self.device)).detach().cpu().numpy()[0] >= THRESHOLD
+        nextinp = np.zeros((41,13))
+        zeropad=np.zeros(13)
         nx = self.extract_mfcc(y,duration=10)
-        for i,data in enumerate(x):
+        for i,data in enumerate(x[0]):
             if out30[i]:
-                nextinp.append(nx[(i*3):(i*3)+3])
+                nextinp[i*3]=nx[i*3]
+                nextinp[(i*3)+1]=nx[(i*3)+1]
+                nextinp[(i*3)+2]=nx[(i*3)+2]
             else:
-                nextinp.append([[0]*13]*3)
-        nextinp=torch.tensor(np.array(nextinp))
-        #-----TODO-----
+                nextinp[i*3]=zeropad
+                nextinp[(i*3)+1]=zeropad
+                nextinp[(i*3)+2]=zeropad
+        nextinp=torch.tensor(nextinp,dtype=torch.float).to(self.device)
+
+        # 10 second model
+        x=np.reshape(nextinp,(1,nextinp.shape[0],nextinp.shape[1]))
+        print(x.shape)
+        out10 = self.model10(torch.tensor(x,dtype=torch.float).to(self.device)).detach().cpu().numpy()[0] >= THRESHOLD
+        nextinp = np.zeros((416,13))
+        zeropad=np.zeros(13)
+        nx = self.extract_mfcc(y,duration=1)
+        for i,data in enumerate(x[0]):
+            if out10[i]:
+                nextinp[i*3]=nx[i*3]
+                nextinp[(i*3)+1]=nx[(i*3)+1]
+                nextinp[(i*3)+2]=nx[(i*3)+2]
+            else:
+                nextinp[i*3]=zeropad
+                nextinp[(i*3)+1]=zeropad
+                nextinp[(i*3)+2]=zeropad
+        nextinp=torch.tensor(nextinp,dtype=torch.float).to(self.device)
+
+        #1 second model
+
+        x=np.reshape(nextinp,(1,nextinp.shape[0],nextinp.shape[1]))
+        out1 = self.model1(torch.tensor(x,dtype=torch.float).to(self.device)).detach().cpu().numpy()[0] >= THRESHOLD
+        return out1
+
+
+
+# model = ThreeTierEnsemble(model10path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/model10.pt',model1path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/model1.pt',model30path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/modeln.pth')
+# y,_ = librosa.load('/Users/sidharthdeepesh/MusicSeg/Dataset A/Raw/Songs/001.mp3', sr=22050)
+# model.predict(y)
+        
 
 
 
