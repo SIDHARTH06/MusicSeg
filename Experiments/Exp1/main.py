@@ -225,30 +225,33 @@ scheduler = ExponentialLR(optimizer, gamma=0.9)
 
 
 model.to(device)
-for epoch in range(50):
-  loss=0.0
-  counter=0
-  for batch in tqdm(music_dataloader):
-      # audio_data = pad_sequence([sample['audio'] for sample in batch], batch_first=True)
-      mfcc = pad_sequence([sample['mfcc'] for sample in batch], batch_first=True)
-      chroma = pad_sequence([sample['chroma'] for sample in batch], batch_first=True)
-      rhythm_patterns = pad_sequence([sample['rhythm_patterns'] for sample in batch], batch_first=True)
-      start_times = pad_sequence([sample['start_times'] for sample in batch], batch_first=True)
-      stop_times = pad_sequence([sample['stop_times'] for sample in batch], batch_first=True)
+with open('result.txt','w') as f:
+    for epoch in range(50):
+        loss=0.0
+        counter=0
+        for batch in tqdm(music_dataloader):
+            # audio_data = pad_sequence([sample['audio'] for sample in batch], batch_first=True)
+            mfcc = pad_sequence([sample['mfcc'] for sample in batch], batch_first=True)
+            chroma = pad_sequence([sample['chroma'] for sample in batch], batch_first=True)
+            rhythm_patterns = pad_sequence([sample['rhythm_patterns'] for sample in batch], batch_first=True)
+            start_times = pad_sequence([sample['start_times'] for sample in batch], batch_first=True)
+            stop_times = pad_sequence([sample['stop_times'] for sample in batch], batch_first=True)
 
-      optimizer.zero_grad()
+            optimizer.zero_grad()
 
-      start_pred, stop_pred = model(mfcc.to(device), chroma.to(device), rhythm_patterns.to(device))
-      start_pred = start_pred.squeeze(dim=1)
-      stop_pred = stop_pred.squeeze(dim=1)
-      loss_start = criterion(start_pred.to(device), start_times.to(device))
-      loss_stop = criterion(stop_pred.to(device), stop_times.to(device))
+            start_pred, stop_pred = model(mfcc.to(device), chroma.to(device), rhythm_patterns.to(device))
+            start_pred = start_pred.squeeze(dim=1)
+            stop_pred = stop_pred.squeeze(dim=1)
+            loss_start = criterion(start_pred.to(device), start_times.to(device))
+            loss_stop = criterion(stop_pred.to(device), stop_times.to(device))
 
-      total_loss = loss_start + loss_stop
-      loss=total_loss.item()
-      total_loss.backward()
-      counter+=1
-      optimizer.step()
-      scheduler.step()
+            total_loss = loss_start + loss_stop
+            loss=total_loss.item()
+            total_loss.backward()
+            counter+=1
+            optimizer.step()
+            scheduler.step()
 
-  print(f"Epoch {epoch} Loss: {loss/counter} Total Cumulative Loss: {total_loss.item()}")
+        f.write(f"Epoch {epoch} Loss: {loss/counter} Total Cumulative Loss: {total_loss.item()}\n")
+
+

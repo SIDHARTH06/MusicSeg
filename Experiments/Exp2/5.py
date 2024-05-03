@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset, random_split
-
+device = 'cuda'
 class MusicDataset(Dataset):
     def __init__(self, mfcc_dir, json_dir):
         self.mfcc_dir = mfcc_dir
@@ -33,7 +33,7 @@ class MusicDataset(Dataset):
 
         # Formulate target labels
         target_labels = []
-        for i in range(81):  # 13 segments
+        for i in range(83):  # 13 segments
             start_boundaries = np.where((start_times >= i * 5) & (start_times < (i + 1) * 5))[0]
             stop_boundaries = np.where((stop_times >= i * 5) & (stop_times < (i + 1) * 5))[0]
             if len(start_boundaries) > 0 or len(stop_boundaries) > 0:
@@ -97,12 +97,12 @@ class MusicLSTM(nn.Module):
 input_size = 13  # Assuming MFCC vector size is 13
 hidden_size = 64
 num_layers = 1
-output_size = 81  # Number of LSTM units (one for each window)
+output_size = 83  # Number of LSTM units (one for each window)
 model = MusicLSTM(input_size, hidden_size, num_layers, output_size)
 print("Testing Model........")
 # Test the model with random input
 batch_size = 32
-seq_length = 81
+seq_length = 83
 mfcc_tensor = torch.randn(batch_size, seq_length, input_size)  # Random input MFCC tensor
 print(mfcc_tensor.shape)
 output = model(mfcc_tensor)
@@ -122,22 +122,35 @@ test_loader = DataLoader(test_set, batch_size=1, shuffle=False)
 val_loader = DataLoader(val_set, batch_size=1, shuffle=False)
 
 # Define your model, loss function, and optimizer
-input_size = 81  # Assuming MFCC vector size is 13
+input_size = 13  # Assuming MFCC vector size is 13
 hidden_size = 64
 num_layers = 1
-output_size = 81 # Number of LSTM units (one for each window)
+output_size = 83 # Number of LSTM units (one for each window)
 model = MusicLSTM(input_size, hidden_size, num_layers, output_size)
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+from sklearn.metrics import f1_score, precision_score, recall_score, precision_recall_curve, auc
+from sklearn.model_selection import KFold
+from torch.utils.data import DataLoader
+
+# Initialize model, criterion, and optimizer
 criterion = nn.BCEWithLogitsLoss()  # Binary cross-entropy loss for binary classification
-# criterion = FocalLoss(gamma=2, alpha=0.25)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Define cross-validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
-
+model.to(device)
 # Initialize lists to store evaluation metrics
 f1_scores = []
 precision_scores = []
 recall_scores = []
+pr_auc_values = []
+
+# Open file to save results
+with open('results/res_5.txt', 'w') as f:
+    f.write("Fold\tF1 Score\tPrecision\tRecall\n")
 
 # Perform 5-fold cross-validation
 for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
@@ -154,10 +167,9 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     for epoch in range(num_epochs):
         total_loss = 0
         for batch in train_loader:
-            mfcc = batch['mfcc']
-            labels = batch['labels']
+            mfcc = batch['mfcc'].to(device)
+            labels = batch['labels'].to(device)
             # Forward pass
-            # print(mfcc.shape)
             outputs = model(mfcc)
             loss = criterion(outputs, labels)
 
@@ -178,19 +190,17 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     val_targets = []
     with torch.no_grad():
         for batch in val_loader:
-            mfcc = batch['mfcc']
-            labels = batch['labels']
+            mfcc = batch['mfcc'].to(device)
+            labels = batch['labels'].to(device)
             outputs = model(mfcc)
-            # print(torch.sigmoid(outputs))
             predicted_labels = torch.sigmoid(outputs) > 0.5
             val_predictions.extend(predicted_labels.cpu().numpy())
-            labels = labels>0.5
+            labels = labels > 0.5
             val_targets.extend(labels.cpu().numpy())
 
     # Compute evaluation metrics for this fold
     val_predictions = np.array(val_predictions)
     val_targets = np.array(val_targets)
-    # print(val_targets)
     f1 = f1_score(val_targets, val_predictions, average='weighted')
     precision = precision_score(val_targets, val_predictions, average='weighted')
     recall = recall_score(val_targets, val_predictions, average='weighted')
@@ -198,14 +208,23 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     precision_scores.append(precision)
     recall_scores.append(recall)
 
-    print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}")
+    # Compute precision-recall curve for this fold
+    precision_fold, recall_fold, _ = precision_recall_curve(val_targets, val_predictions)
+    pr_auc_fold = auc(recall_fold, precision_fold)
+    pr_auc_values.append(pr_auc_fold)
+
+    # Save validation scores to file
+    with open('results/res_5.txt', 'a') as f:
+        f.write(f"{fold+1}\t{f1:.4f}\t{precision:.4f}\t{recall:.4f}\n")
+
+    print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, PR AUC: {pr_auc_fold:.4f}")
 
 # Compute metrics on the test set
 test_predictions = []
 test_targets = []
 with torch.no_grad():
     for batch in test_loader:
-        mfcc = batch['mfcc']
+        mfcc = batch['mfcc'].to(device)
         labels = batch['labels'] > 0.5
         outputs = model(mfcc)
         predicted_labels = torch.sigmoid(outputs) > 0.5
@@ -220,28 +239,51 @@ test_recall = recall_score(test_targets, test_predictions, average='weighted')
 
 print(f"\nTest F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}")
 
+# Save test scores to file
+with open('results/res_5.txt', 'a') as f:
+    f.write("Test Scores:\n")
+    f.write(f"F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}\n")
+
 print("plotting")
 
+# Plotting Precision-Recall curve
+plt.figure(figsize=(10, 5))
+
+for fold in range(len(pr_auc_values)):
+    plt.plot(recall_values[fold], precision_values[fold], label=f'Fold {fold+1} (AUC = {pr_auc_values[fold]:.2f})')
+
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.title('Precision-Recall Curve')
+plt.legend(loc='lower left')
+plt.grid(True)
+plt.savefig('results/precision_recall_curve_5.png')
+plt.show()
+
 # Plot F1 scores, accuracies, and precisions in one plot
-from sklearn.metrics import confusion_matrix
-import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 5))
 
 # Plot F1 scores
 plt.plot(f1_scores, label='F1 Score', color='blue')
 
-# Plot accuracies
-plt.plot(recall_scores, label='Precision', color='green')
-
 # Plot precisions
-plt.plot(precision_scores, label='Recall', color='red')
+plt.plot(precision_scores, label='Precision', color='green')
+
+# Plot recalls
+plt.plot(recall_scores, label='Recall', color='red')
 
 plt.title('Evaluation Metrics vs Fold')
-plt.xlabel('Epoch')
+plt.xlabel('Fold')
 plt.ylabel('Score')
 plt.grid(True)
 plt.legend()
+plt.savefig('results/evaluation_metrics_5.png')
 plt.show()
 
+# Save PR curve data
+np.save('results/precision_values_5.npy', np.array(precision_values))
+np.save('results/recall_values_5.npy', np.array(recall_values))
+np.save('results/pr_auc_values_5.npy', np.array(pr_auc_values))
 
-torch.save(model,'./models/mode5.pt')
+# Save F1, precision, recall, and PR curve plots
+torch.save(model,'./models/model5.pt')

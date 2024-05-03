@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset, random_split
-device = 'cuda'
+
 class MusicDataset(Dataset):
     def __init__(self, mfcc_dir, json_dir):
         self.mfcc_dir = mfcc_dir
@@ -21,7 +21,7 @@ class MusicDataset(Dataset):
         json_path = os.path.join(self.json_dir, self.mfcc_files[idx].replace(".npz", ".json"))
 
         # Load MFCC features
-        mfcc_data = np.load(mfcc_path)['mfcc']
+        mfcc_data = np.load(mfcc_path)['spectrogram']
         mfcc_tensor = torch.tensor(mfcc_data, dtype=torch.float32)
 
         # Load JSON annotations
@@ -30,12 +30,11 @@ class MusicDataset(Dataset):
         # Extract start and stop timestamps
         start_times = np.array(annotations['start'])
         stop_times = np.array(annotations['stop'])
-
         # Formulate target labels
         target_labels = []
-        for i in range(416):  # 13 segments
-            start_boundaries = np.where((start_times >= i * 1) & (start_times < (i + 1) * 1))[0]
-            stop_boundaries = np.where((stop_times >= i * 1) & (stop_times < (i + 1) * 1))[0]
+        for i in range(13):  # 13 segments
+            start_boundaries = np.where((start_times >= i * 30) & (start_times < (i + 1) * 30))[0]
+            stop_boundaries = np.where((stop_times >= i * 30) & (stop_times < (i + 1) * 30))[0]
             if len(start_boundaries) > 0 or len(stop_boundaries) > 0:
                 target_labels.append(1)
             else:
@@ -46,19 +45,16 @@ class MusicDataset(Dataset):
         return {'mfcc': mfcc_tensor, 'labels': target_labels_tensor}
 
 # Example usage:
-mfcc_dir = "../../Dataset A/Processed/MFCC/1swindow"
-json_dir = "../../Dataset A/Labels"
+mfcc_dir = "./Dataset A/Processed/Spectrogram/30swindow"
+json_dir = "./Dataset A/Labels"
 dataset = MusicDataset(mfcc_dir, json_dir)
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True)
-print("testing dataloader..")
+
 for batch in dataloader:
     mfcc = batch['mfcc']
     labels = batch['labels']
     print("MFCC Shape:", mfcc.shape)
     print("Labels:", labels)
-
-print("..........")
-
 
 train_size = int(0.7 * len(dataset))  # 70% of data for training
 test_size = int(0.15 * len(dataset))  # 15% of data for testing
@@ -67,91 +63,97 @@ val_size = len(dataset) - train_size - test_size  # Remaining 15% for validation
 # Use random_split to split the dataset
 train_set, test_set, val_set = random_split(dataset, [train_size, test_size, val_size])
 
+import torch
+import torch.nn as nn
+import torchvision.models as models
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
-class MusicLSTM(nn.Module):
-    def __init__(self, input_size, hidden_size, num_layers, output_size):
-        super(MusicLSTM, self).__init__()
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
 
-        # Define LSTM units for each window
-        self.lstm_layers = nn.ModuleList([nn.LSTM(input_size, hidden_size, num_layers=num_layers, batch_first=True)
-                                           for _ in range(output_size)])
+class CustomResNet(nn.Module):
+    def __init__(self, input_channels=13, num_classes=2):
+        super(CustomResNet, self).__init__()
+        self.conv1 = nn.Conv2d(input_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.relu = nn.ReLU(inplace=True)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        # Define linear layer to map LSTM output to label size
-        self.linear = nn.Linear(hidden_size, 1)
+        self.layer1 = self._make_layer(64, 64, 2)
+        self.layer2 = self._make_layer(64, 128, 2, stride=2)
+        self.layer3 = self._make_layer(128, 256, 2, stride=2)
+        self.layer4 = self._make_layer(256, 512, 2, stride=2)
+
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.fc = nn.Linear(512, 13)
+        self.sigmoid = nn.Sigmoid()
+
+    def _make_layer(self, in_channels, out_channels, blocks, stride=1):
+        layers = []
+        layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False))
+        layers.append(nn.BatchNorm2d(out_channels))
+        layers.append(nn.ReLU(inplace=True))
+        layers.append(nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False))
+        layers.append(nn.BatchNorm2d(out_channels))
+        layers.append(nn.ReLU(inplace=True))
+
+        for _ in range(1, blocks):
+            layers.append(nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False))
+            layers.append(nn.BatchNorm2d(out_channels))
+            layers.append(nn.ReLU(inplace=True))
+            layers.append(nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False))
+            layers.append(nn.BatchNorm2d(out_channels))
+            layers.append(nn.ReLU(inplace=True))
+
+        return nn.Sequential(*layers)
 
     def forward(self, x):
-        outputs = []
-        for i in range(x.size(1)):
-            lstm_out, _ = self.lstm_layers[i](x[:, i:i+1, :])
-            output = self.linear(lstm_out[:, -1, :])  # Use only the last timestep output
-            outputs.append(output)
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
 
-        return torch.cat(outputs, dim=1)
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+        return x
+
 
 # Example usage:
-input_size = 13  # Assuming MFCC vector size is 13
-hidden_size = 64
-num_layers = 1
-output_size = 416  # Number of LSTM units (one for each window)
-model = MusicLSTM(input_size, hidden_size, num_layers, output_size)
-print("Testing Model........")
-# Test the model with random input
-batch_size = 32
-seq_length = 416
-mfcc_tensor = torch.randn(batch_size, seq_length, input_size)  # Random input MFCC tensor
-print(mfcc_tensor.shape)
-output = model(mfcc_tensor)
-print("Output shape:", output.shape)  # Should be batch_size x output_size
+batch_size = 1
+no_of_windows = 13
 
-print("...................")
+# Generate random input data (replace with your actual data)
+input_data = torch.randn(batch_size, no_of_windows, 128, 1292)
 
+# Create the model
+model = CustomResNet()
 
-import numpy as np
+import torch.optim as optim
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.model_selection import KFold
-import torch.optim as optim
-
-# Assuming you have train_set, test_set, and val_set
-train_loader = DataLoader(train_set, batch_size=8, shuffle=True)
-test_loader = DataLoader(test_set, batch_size=1, shuffle=False)
-val_loader = DataLoader(val_set, batch_size=1, shuffle=False)
 
 # Define your model, loss function, and optimizer
-input_size = 13  # Assuming MFCC vector size is 13
+input_size = 128  # Number of frequency bins in the spectrogram
 hidden_size = 64
 num_layers = 1
-output_size = 416 # Number of LSTM units (one for each window)
-model = MusicLSTM(input_size, hidden_size, num_layers, output_size)
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import numpy as np
-from sklearn.metrics import f1_score, precision_score, recall_score, precision_recall_curve, auc
-from sklearn.model_selection import KFold
-from torch.utils.data import DataLoader
-
-# Initialize model, criterion, and optimizer
+output_size = 13  # Number of windows
+model = CustomResNet()  # Assuming you've defined CustomResNet
 criterion = nn.BCEWithLogitsLoss()  # Binary cross-entropy loss for binary classification
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Define cross-validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
-model.to(device)
+
 # Initialize lists to store evaluation metrics
 f1_scores = []
 precision_scores = []
 recall_scores = []
-pr_auc_values = []
-
-# Open file to save results
-with open('results/res_1.txt', 'w') as f:
-    f.write("Fold\tF1 Score\tPrecision\tRecall\n")
-
+model.to('cuda')
 # Perform 5-fold cross-validation
 for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     print(f"Fold [{fold+1}/5]")
@@ -167,10 +169,11 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     for epoch in range(num_epochs):
         total_loss = 0
         for batch in train_loader:
-            mfcc = batch['mfcc'].to(device)
-            labels = batch['labels'].to(device)
+            spectrogram, labels = batch['mfcc'], batch['labels']
+            spectrogram = torch.tensor(spectrogram,dtype=torch.float).to('cuda')
+            labels = torch.tensor(labels,dtype=torch.float).to('cuda')
             # Forward pass
-            outputs = model(mfcc)
+            outputs = model(spectrogram)
             loss = criterion(outputs, labels)
 
             # Backward pass and optimization
@@ -188,14 +191,15 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     model.eval()
     val_predictions = []
     val_targets = []
+    
     with torch.no_grad():
         for batch in val_loader:
-            mfcc = batch['mfcc'].to(device)
-            labels = batch['labels'].to(device)
-            outputs = model(mfcc)
+            spectrogram, labels = batch['mfcc'], batch['labels']
+            spectrogram = torch.tensor(spectrogram,dtype=torch.float).to('cuda')
+            labels = torch.tensor(labels,dtype=torch.float).to('cuda')
+            outputs = model(spectrogram)
             predicted_labels = torch.sigmoid(outputs) > 0.5
             val_predictions.extend(predicted_labels.cpu().numpy())
-            labels = labels > 0.5
             val_targets.extend(labels.cpu().numpy())
 
     # Compute evaluation metrics for this fold
@@ -208,25 +212,16 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     precision_scores.append(precision)
     recall_scores.append(recall)
 
-    # Compute precision-recall curve for this fold
-    precision_fold, recall_fold, _ = precision_recall_curve(val_targets, val_predictions)
-    pr_auc_fold = auc(recall_fold, precision_fold)
-    pr_auc_values.append(pr_auc_fold)
-
-    # Save validation scores to file
-    with open('results/res_1.txt', 'a') as f:
-        f.write(f"{fold+1}\t{f1:.4f}\t{precision:.4f}\t{recall:.4f}\n")
-
-    print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, PR AUC: {pr_auc_fold:.4f}")
+    print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}")
 
 # Compute metrics on the test set
+test_loader = DataLoader(test_set, batch_size=1, shuffle=False)
 test_predictions = []
 test_targets = []
 with torch.no_grad():
     for batch in test_loader:
-        mfcc = batch['mfcc'].to(device)
-        labels = batch['labels'] > 0.5
-        outputs = model(mfcc)
+        spectrogram, labels = batch
+        outputs = model(spectrogram)
         predicted_labels = torch.sigmoid(outputs) > 0.5
         test_predictions.extend(predicted_labels.cpu().numpy())
         test_targets.extend(labels.cpu().numpy())
@@ -238,52 +233,3 @@ test_precision = precision_score(test_targets, test_predictions, average='weight
 test_recall = recall_score(test_targets, test_predictions, average='weighted')
 
 print(f"\nTest F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}")
-
-# Save test scores to file
-with open('results/res_1.txt', 'a') as f:
-    f.write("Test Scores:\n")
-    f.write(f"F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}\n")
-
-print("plotting")
-
-# Plotting Precision-Recall curve
-plt.figure(figsize=(10, 5))
-
-for fold in range(len(pr_auc_values)):
-    plt.plot(recall_values[fold], precision_values[fold], label=f'Fold {fold+1} (AUC = {pr_auc_values[fold]:.2f})')
-
-plt.xlabel('Recall')
-plt.ylabel('Precision')
-plt.title('Precision-Recall Curve')
-plt.legend(loc='lower left')
-plt.grid(True)
-plt.savefig('results/precision_recall_curve_1.png')
-plt.show()
-
-# Plot F1 scores, accuracies, and precisions in one plot
-plt.figure(figsize=(10, 5))
-
-# Plot F1 scores
-plt.plot(f1_scores, label='F1 Score', color='blue')
-
-# Plot precisions
-plt.plot(precision_scores, label='Precision', color='green')
-
-# Plot recalls
-plt.plot(recall_scores, label='Recall', color='red')
-
-plt.title('Evaluation Metrics vs Fold')
-plt.xlabel('Fold')
-plt.ylabel('Score')
-plt.grid(True)
-plt.legend()
-plt.savefig('results/evaluation_metrics_1.png')
-plt.show()
-
-# Save PR curve data
-np.save('results/precision_values_1.npy', np.array(precision_values))
-np.save('results/recall_values_1.npy', np.array(recall_values))
-np.save('results/pr_auc_values_1.npy', np.array(pr_auc_values))
-
-# Save F1, precision, recall, and PR curve plots
-torch.save(model,'./models/model1.pt')

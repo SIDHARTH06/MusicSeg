@@ -5,7 +5,15 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset, random_split
-
+import torch.nn as nn
+import torch.optim as optim
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+from sklearn.metrics import f1_score, precision_score, recall_score, precision_recall_curve, auc
+from sklearn.model_selection import KFold
+from torch.utils.data import DataLoader
 class MusicDataset(Dataset):
     def __init__(self, mfcc_dir, json_dir):
         self.mfcc_dir = mfcc_dir
@@ -30,7 +38,6 @@ class MusicDataset(Dataset):
         # Extract start and stop timestamps
         start_times = np.array(annotations['start'])
         stop_times = np.array(annotations['stop'])
-
         # Formulate target labels
         target_labels = []
         for i in range(13):  # 13 segments
@@ -45,31 +52,8 @@ class MusicDataset(Dataset):
 
         return {'mfcc': mfcc_tensor, 'labels': target_labels_tensor}
 
-# Example usage:
-mfcc_dir = "../../Dataset A/Processed/Spectrogram/30swindow"
-json_dir = "../../Dataset A/Labels"
-dataset = MusicDataset(mfcc_dir, json_dir)
-dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True)
-
-for batch in dataloader:
-    mfcc = batch['mfcc']
-    labels = batch['labels']
-    print("Spectrogram Shape:", mfcc.shape)
-    print("Labels:", labels)
-
-
-train_size = int(0.7 * len(dataset))  # 70% of data for training
-test_size = int(0.15 * len(dataset))  # 15% of data for testing
-val_size = len(dataset) - train_size - test_size  # Remaining 15% for validation
-
-# Use random_split to split the dataset
-train_set, test_set, val_set = random_split(dataset, [train_size, test_size, val_size])
-
-import torch
-import torch.nn as nn
-
 class CustomResNet(nn.Module):
-    def __init__(self, input_channels=1292, num_classes=2):
+    def __init__(self, input_channels=13, num_classes=2):
         super(CustomResNet, self).__init__()
         self.conv1 = nn.Conv2d(input_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -82,7 +66,7 @@ class CustomResNet(nn.Module):
         self.layer4 = self._make_layer(256, 512, 2, stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512, num_classes)
+        self.fc = nn.Linear(512, 13)
         self.sigmoid = nn.Sigmoid()
 
     def _make_layer(self, in_channels, out_channels, blocks, stride=1):
@@ -118,75 +102,88 @@ class CustomResNet(nn.Module):
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
         x = self.fc(x)
-        x = self.sigmoid(x)
         return x
 
+# Define a function to plot precision-recall curve
+def plot_pr_curve(precision, recall, save_path):
+    plt.figure()
+    plt.plot(recall, precision, marker='.')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.grid(True)
+    plt.savefig(save_path)
+    plt.close()
 
-import torch.optim as optim
-from sklearn.metrics import f1_score, precision_score, recall_score
-from sklearn.model_selection import KFold
+# Example usage:
+mfcc_dir = "../../Dataset A/Processed/Spectrogram/30swindow"
+json_dir = "../../Dataset A/Labels"
+dataset = MusicDataset(mfcc_dir, json_dir)
+train_size = int(0.7 * len(dataset))  # 70% of data for training
+test_size = int(0.15 * len(dataset))  # 15% of data for testing
+val_size = len(dataset) - train_size - test_size  # Remaining 15% for validation
+train_set, test_set, val_set = random_split(dataset, [train_size, test_size, val_size])
 
-# Define your model, loss function, and optimizer
-input_size = 128  # Number of frequency bins in the spectrogram
-hidden_size = 64
-num_layers = 1
-output_size = 13  # Number of windows
-model = CustomResNet(input_size, hidden_size, num_layers, output_size)  # Assuming you've defined CustomResNet
-criterion = nn.BCEWithLogitsLoss()  # Binary cross-entropy loss for binary classification
+batch_size = 1
+no_of_windows = 13
+model = CustomResNet()
+criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-
-# Define cross-validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
-# Initialize lists to store evaluation metrics
+results_folder = "results_30"
+if not os.path.exists(results_folder):
+    os.makedirs(results_folder)
+
+results_file = os.path.join(results_folder, "res.txt")
+with open(results_file, 'w') as f:
+    f.write("Fold\tValidation F1 Score\tValidation Precision\tValidation Recall\n")
+
 f1_scores = []
 precision_scores = []
 recall_scores = []
 
-# Perform 5-fold cross-validation
 for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     print(f"Fold [{fold+1}/5]")
 
-    # Split data into training and validation sets for this fold
     train_subset = torch.utils.data.Subset(train_set, train_index)
     val_subset = torch.utils.data.Subset(train_set, val_index)
     train_loader = DataLoader(train_subset, batch_size=8, shuffle=True)
     val_loader = DataLoader(val_subset, batch_size=1, shuffle=False)
 
-    # Training loop for this fold
-    num_epochs = 100
-    for epoch in range(num_epochs):
+    model.to('cuda')
+    for epoch in range(100):
         total_loss = 0
         for batch in train_loader:
-            spectrogram, labels = batch
-            # Forward pass
+            spectrogram, labels = batch['mfcc'], batch['labels']
+            spectrogram = torch.tensor(spectrogram, dtype=torch.float).to('cuda')
+            labels = torch.tensor(labels, dtype=torch.float).to('cuda')
+
+            optimizer.zero_grad()
             outputs = model(spectrogram)
             loss = criterion(outputs, labels)
-
-            # Backward pass and optimization
-            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
             total_loss += loss.item()
 
-        # Print average loss for the epoch
         average_loss = total_loss / len(train_loader)
-        print(f"\tEpoch [{epoch+1}/{num_epochs}], Average Loss: {average_loss:.4f}")
+        print(f"\tEpoch [{epoch+1}/{100}], Average Loss: {average_loss:.4f}")
 
-    # Evaluation on validation set
     model.eval()
     val_predictions = []
     val_targets = []
+    
     with torch.no_grad():
         for batch in val_loader:
-            spectrogram, labels = batch
+            spectrogram, labels = batch['mfcc'], batch['labels']
+            spectrogram = torch.tensor(spectrogram, dtype=torch.float).to('cuda')
+            labels = torch.tensor(labels, dtype=torch.float).to('cuda')
+
             outputs = model(spectrogram)
             predicted_labels = torch.sigmoid(outputs) > 0.5
             val_predictions.extend(predicted_labels.cpu().numpy())
             val_targets.extend(labels.cpu().numpy())
 
-    # Compute evaluation metrics for this fold
     val_predictions = np.array(val_predictions)
     val_targets = np.array(val_targets)
     f1 = f1_score(val_targets, val_predictions, average='weighted')
@@ -196,15 +193,24 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     precision_scores.append(precision)
     recall_scores.append(recall)
 
+    with open(results_file, 'a') as f:
+        f.write(f"{fold+1}\t{f1:.4f}\t{precision:.4f}\t{recall:.4f}\n")
+
     print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}")
+
+    # Compute and save the precision-recall curve for each fold
+    precision, recall, _ = precision_recall_curve(val_targets.ravel(), val_predictions.ravel())
+    pr_curve_save_path = os.path.join(results_folder, f"pr_curve_fold_{fold+1}_30.png")
+    plot_pr_curve(precision, recall, pr_curve_save_path)
 
 # Compute metrics on the test set
 test_loader = DataLoader(test_set, batch_size=1, shuffle=False)
 test_predictions = []
 test_targets = []
+
 with torch.no_grad():
     for batch in test_loader:
-        spectrogram, labels = batch
+        spectrogram, labels = batch['mfcc'], batch['labels']
         outputs = model(spectrogram)
         predicted_labels = torch.sigmoid(outputs) > 0.5
         test_predictions.extend(predicted_labels.cpu().numpy())
@@ -217,3 +223,4 @@ test_precision = precision_score(test_targets, test_predictions, average='weight
 test_recall = recall_score(test_targets, test_predictions, average='weighted')
 
 print(f"\nTest F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}")
+torch.save(model,'./models/model30.pt')

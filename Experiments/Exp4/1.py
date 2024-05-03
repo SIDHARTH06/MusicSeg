@@ -5,11 +5,7 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset, random_split
-
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
+device = 'cuda'
 
 class FocalLoss(nn.Module):
     def __init__(self, gamma=2, alpha=0.25):
@@ -36,11 +32,6 @@ class FocalLoss(nn.Module):
 # Example usage:
 # Assuming your model outputs logits, and targets are one-hot encoded labels
 criterion = FocalLoss(gamma=2, alpha=0.25)
-logits = torch.tensor([[0.9], [0.1], [0.3]])  # Example logits
-targets = torch.tensor([[1.0], [0.0], [1.0]])  # Example one-hot encoded targets
-
-loss = criterion(logits, targets)
-print(loss.item())  # This will print the focal loss value
 class MusicDataset(Dataset):
     def __init__(self, mfcc_dir, json_dir):
         self.mfcc_dir = mfcc_dir
@@ -159,22 +150,32 @@ test_loader = DataLoader(test_set, batch_size=1, shuffle=False)
 val_loader = DataLoader(val_set, batch_size=1, shuffle=False)
 
 # Define your model, loss function, and optimizer
-input_size = 416  # Assuming MFCC vector size is 13
+input_size = 13  # Assuming MFCC vector size is 13
 hidden_size = 64
 num_layers = 1
 output_size = 416 # Number of LSTM units (one for each window)
 model = MusicLSTM(input_size, hidden_size, num_layers, output_size)
-# criterion = nn.BCEWithLogitsLoss()  # Binary cross-entropy loss for binary classification
-criterion = FocalLoss(gamma=2, alpha=0.25)
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+from sklearn.metrics import f1_score, precision_score, recall_score, precision_recall_curve, auc
+from sklearn.model_selection import KFold
+from torch.utils.data import DataLoader
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Define cross-validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
-
+model.to(device)
 # Initialize lists to store evaluation metrics
 f1_scores = []
 precision_scores = []
 recall_scores = []
+pr_auc_values = []
+
+# Open file to save results
+with open('results/res_1.txt', 'w') as f:
+    f.write("Fold\tF1 Score\tPrecision\tRecall\n")
 
 # Perform 5-fold cross-validation
 for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
@@ -191,10 +192,9 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     for epoch in range(num_epochs):
         total_loss = 0
         for batch in train_loader:
-            mfcc = batch['mfcc']
-            labels = batch['labels']
+            mfcc = batch['mfcc'].to(device)
+            labels = batch['labels'].to(device)
             # Forward pass
-            # print(mfcc.shape)
             outputs = model(mfcc)
             loss = criterion(outputs, labels)
 
@@ -215,19 +215,17 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     val_targets = []
     with torch.no_grad():
         for batch in val_loader:
-            mfcc = batch['mfcc']
-            labels = batch['labels']
+            mfcc = batch['mfcc'].to(device)
+            labels = batch['labels'].to(device)
             outputs = model(mfcc)
-            # print(torch.sigmoid(outputs))
             predicted_labels = torch.sigmoid(outputs) > 0.5
             val_predictions.extend(predicted_labels.cpu().numpy())
-            labels = labels>0.5
+            labels = labels > 0.5
             val_targets.extend(labels.cpu().numpy())
 
     # Compute evaluation metrics for this fold
     val_predictions = np.array(val_predictions)
     val_targets = np.array(val_targets)
-    # print(val_targets)
     f1 = f1_score(val_targets, val_predictions, average='weighted')
     precision = precision_score(val_targets, val_predictions, average='weighted')
     recall = recall_score(val_targets, val_predictions, average='weighted')
@@ -235,14 +233,23 @@ for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
     precision_scores.append(precision)
     recall_scores.append(recall)
 
-    print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}")
+    # Compute precision-recall curve for this fold
+    precision_fold, recall_fold, _ = precision_recall_curve(val_targets, val_predictions)
+    pr_auc_fold = auc(recall_fold, precision_fold)
+    pr_auc_values.append(pr_auc_fold)
+
+    # Save validation scores to file
+    with open('results/res_1.txt', 'a') as f:
+        f.write(f"{fold+1}\t{f1:.4f}\t{precision:.4f}\t{recall:.4f}\n")
+
+    print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, PR AUC: {pr_auc_fold:.4f}")
 
 # Compute metrics on the test set
 test_predictions = []
 test_targets = []
 with torch.no_grad():
     for batch in test_loader:
-        mfcc = batch['mfcc']
+        mfcc = batch['mfcc'].to(device)
         labels = batch['labels'] > 0.5
         outputs = model(mfcc)
         predicted_labels = torch.sigmoid(outputs) > 0.5
@@ -257,28 +264,51 @@ test_recall = recall_score(test_targets, test_predictions, average='weighted')
 
 print(f"\nTest F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}")
 
+# Save test scores to file
+with open('results/res_1.txt', 'a') as f:
+    f.write("Test Scores:\n")
+    f.write(f"F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}\n")
+
 print("plotting")
 
+# Plotting Precision-Recall curve
+plt.figure(figsize=(10, 5))
+
+for fold in range(len(pr_auc_values)):
+    plt.plot(recall_values[fold], precision_values[fold], label=f'Fold {fold+1} (AUC = {pr_auc_values[fold]:.2f})')
+
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.title('Precision-Recall Curve')
+plt.legend(loc='lower left')
+plt.grid(True)
+plt.savefig('results/precision_recall_curve_1.png')
+plt.show()
+
 # Plot F1 scores, accuracies, and precisions in one plot
-from sklearn.metrics import confusion_matrix
-import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 5))
 
 # Plot F1 scores
 plt.plot(f1_scores, label='F1 Score', color='blue')
 
-# Plot accuracies
-plt.plot(recall_scores, label='Precision', color='green')
-
 # Plot precisions
-plt.plot(precision_scores, label='Recall', color='red')
+plt.plot(precision_scores, label='Precision', color='green')
+
+# Plot recalls
+plt.plot(recall_scores, label='Recall', color='red')
 
 plt.title('Evaluation Metrics vs Fold')
-plt.xlabel('Epoch')
+plt.xlabel('Fold')
 plt.ylabel('Score')
 plt.grid(True)
 plt.legend()
+plt.savefig('results/evaluation_metrics_1.png')
 plt.show()
 
+# Save PR curve data
+np.save('results/precision_values_1.npy', np.array(precision_values))
+np.save('results/recall_values_1.npy', np.array(recall_values))
+np.save('results/pr_auc_values_1.npy', np.array(pr_auc_values))
 
+# Save F1, precision, recall, and PR curve plots
 torch.save(model,'./models/model1.pt')
