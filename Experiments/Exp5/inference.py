@@ -95,10 +95,12 @@ class ThreeTierEnsemble():
 
 
 
-# model = ThreeTierEnsemble(model10path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/model10.pt',model1path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/model1.pt',model30path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/modeln.pth')
-# y,_ = librosa.load('/Users/sidharthdeepesh/MusicSeg/Dataset A/Raw/Songs/001.mp3', sr=22050)
-# model.predict(y)
-        
+model = ThreeTierEnsemble(model10path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/model10.pt',model1path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/model1.pt',model30path='/Users/sidharthdeepesh/MusicSeg/Experiments/Exp5/Models/model30.pt')
+y,_ = librosa.load('/Users/sidharthdeepesh/MusicSeg/Dataset A/Raw/Songs/004.mp3', sr=22050)
+out = model.predict(y) > THRESHOLD
+true_indices = [index for index, value in enumerate(out) if value]
+print(len(y)//22050)
+print("Indices:", (np.array(true_indices)/86)*324)
 
 
 

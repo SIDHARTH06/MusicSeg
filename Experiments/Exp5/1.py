@@ -124,7 +124,7 @@ test_loader = DataLoader(test_set, batch_size=1, shuffle=False)
 val_loader = DataLoader(val_set, batch_size=1, shuffle=False)
 
 # Define your model, loss function, and optimizer
-input_size = 416  # Assuming MFCC vector size is 13
+input_size = 13  # Assuming MFCC vector size is 13
 hidden_size = 64
 num_layers = 1
 output_size = 416 # Number of LSTM units (one for each window)
