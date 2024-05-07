@@ -5,8 +5,8 @@ Dataset[[:space:]]A/Processed/Spectrogram/10swindow/*npz filter=lfs diff=lfs mer
 Dataset[[:space:]]A/Processed/Spectrogram/5swindow/*npz filter=lfs diff=lfs merge=lfs -text
 Dataset[[:space:]]A/Processed/Spectrogram/1swindow/*npz filter=lfs diff=lfs merge=lfs -text
 Dataset[[:space:]]B/Raw/Songs/Songs/*.mp3 filter=lfs diff=lfs merge=lfs -text
-Dataset[[:space:]]A/Processed/Spectrogram/30/*npz filter=lfs diff=lfs merge=lfs -text
-Dataset[[:space:]]A/Processed/Spectrogram/15/*npz filter=lfs diff=lfs merge=lfs -text
-Dataset[[:space:]]A/Processed/Spectrogram/10/*npz filter=lfs diff=lfs merge=lfs -text
-Dataset[[:space:]]A/Processed/Spectrogram/5/*npz filter=lfs diff=lfs merge=lfs -text
-Dataset[[:space:]]A/Processed/Spectrogram/1/*npz filter=lfs diff=lfs merge=lfs -text
+Dataset[[:space:]]B/Processed/Spectrogram/30/*npz filter=lfs diff=lfs merge=lfs -text
+Dataset[[:space:]]B/Processed/Spectrogram/15/*npz filter=lfs diff=lfs merge=lfs -text
+Dataset[[:space:]]B/Processed/Spectrogram/10/*npz filter=lfs diff=lfs merge=lfs -text
+Dataset[[:space:]]B/Processed/Spectrogram/5/*npz filter=lfs diff=lfs merge=lfs -text
+Dataset[[:space:]]B/Processed/Spectrogram/1/*npz filter=lfs diff=lfs merge=lfs -text
