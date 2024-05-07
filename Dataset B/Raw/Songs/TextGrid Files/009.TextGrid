@@ -1,0 +1,68 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 320.33897916666666 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "en" 
+        xmin = 0 
+        xmax = 320.33897916666666 
+        intervals: size = 11 
+        intervals [1]:
+            xmin = 0 
+            xmax = 1.0435534970212474 
+            text = "" 
+        intervals [2]:
+            xmin = 1.0435534970212474 
+            xmax = 32.56361389681017 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 32.56361389681017 
+            xmax = 84.89404166666667 
+            text = "Pallavi" 
+        intervals [4]:
+            xmin = 84.89404166666667 
+            xmax = 125.01738722485423 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 125.01738722485423 
+            xmax = 160.4141875 
+            text = "Anupallavi" 
+        intervals [6]:
+            xmin = 160.4141875 
+            xmax = 177.70494893400868 
+            text = "Pallavi" 
+        intervals [7]:
+            xmin = 177.70494893400868 
+            xmax = 209.94710795374527 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 209.94710795374527 
+            xmax = 245.82848279717015 
+            text = "Charanam" 
+        intervals [9]:
+            xmin = 245.82848279717015 
+            xmax = 299.04204166666665 
+            text = "Pallavi" 
+        intervals [10]:
+            xmin = 299.04204166666665 
+            xmax = 315.8962556016143 
+            text = "BGM" 
+        intervals [11]:
+            xmin = 315.8962556016143 
+            xmax = 320.33897916666666 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "jeevan" 
+        xmin = 0 
+        xmax = 320.33897916666666 
+        intervals: size = 1 
+        intervals [1]:
+            xmin = 0 
+            xmax = 320.33897916666666 
+            text = "" 

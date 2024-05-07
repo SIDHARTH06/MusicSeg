@@ -4,14 +4,19 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 import pandas as pd
+import re
 from torch.utils.data import DataLoader, Dataset, random_split
+import matplotlib.pyplot as plt
 device = 'cuda'
+precision_values=[]
+recall_values=[]
 class MusicDataset(Dataset):
     def __init__(self, mfcc_dir, json_dir):
         self.mfcc_dir = mfcc_dir
         self.json_dir = json_dir
         self.mfcc_files = [file for file in os.listdir(mfcc_dir) if file.endswith(".npz")]
         self.json_files = [file for file in os.listdir(json_dir) if file.endswith(".json")]
+        self.csvfile = pd.read_csv('/workspace/Project_Final/MusicSeg/Dataset B/filename_mapping.csv')
 
     def __len__(self):
         return len(self.mfcc_files)
@@ -26,14 +31,13 @@ class MusicDataset(Dataset):
 
         # Load JSON annotations
         annotations=pd.read_json(json_path)
-
         # Extract start and stop timestamps
         start_times = np.array(annotations['start'])
         stop_times = np.array(annotations['stop'])
 
         # Formulate target labels
         target_labels = []
-        for i in range(416):  # 13 segments
+        for i in range(392):  # 13 segments
             start_boundaries = np.where((start_times >= i * 1) & (start_times < (i + 1) * 1))[0]
             stop_boundaries = np.where((stop_times >= i * 1) & (stop_times < (i + 1) * 1))[0]
             if len(start_boundaries) > 0 or len(stop_boundaries) > 0:
@@ -46,8 +50,8 @@ class MusicDataset(Dataset):
         return {'mfcc': mfcc_tensor, 'labels': target_labels_tensor}
 
 # Example usage:
-mfcc_dir = "../../Dataset A/Processed/MFCC/1swindow"
-json_dir = "../../Dataset A/Labels"
+mfcc_dir = "../../Dataset B/Processed/MFCC/1"
+json_dir = "../../Dataset B/Labels/"
 dataset = MusicDataset(mfcc_dir, json_dir)
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True)
 print("testing dataloader..")
@@ -97,12 +101,12 @@ class MusicLSTM(nn.Module):
 input_size = 13  # Assuming MFCC vector size is 13
 hidden_size = 64
 num_layers = 1
-output_size = 416  # Number of LSTM units (one for each window)
+output_size = 392  # Number of LSTM units (one for each window)
 model = MusicLSTM(input_size, hidden_size, num_layers, output_size)
 print("Testing Model........")
 # Test the model with random input
 batch_size = 32
-seq_length = 416
+seq_length = 392
 mfcc_tensor = torch.randn(batch_size, seq_length, input_size)  # Random input MFCC tensor
 print(mfcc_tensor.shape)
 output = model(mfcc_tensor)
@@ -125,7 +129,7 @@ val_loader = DataLoader(val_set, batch_size=1, shuffle=False)
 input_size = 13  # Assuming MFCC vector size is 13
 hidden_size = 64
 num_layers = 1
-output_size = 416 # Number of LSTM units (one for each window)
+output_size = 392 # Number of LSTM units (one for each window)
 model = MusicLSTM(input_size, hidden_size, num_layers, output_size)
 import torch
 import torch.nn as nn
@@ -147,143 +151,142 @@ f1_scores = []
 precision_scores = []
 recall_scores = []
 pr_auc_values = []
+precision_values=[]
+recall_values=[]
+# Open file to save result
 
-# Open file to save results
-with open('results/res_1.txt', 'w') as f:
-    f.write("Fold\tF1 Score\tPrecision\tRecall\n")
+with open('./result/res_1.txt', 'w') as f:
 
-# Perform 5-fold cross-validation
-for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
-    print(f"Fold [{fold+1}/5]")
+    # Perform 5-fold cross-validation
+    model.train()
+    for fold, (train_index, val_index) in enumerate(kf.split(train_set)):
+        f.write(f"Fold [{fold+1}/5]")
 
-    # Split data into training and validation sets for this fold
-    train_subset = torch.utils.data.Subset(train_set, train_index)
-    val_subset = torch.utils.data.Subset(train_set, val_index)
-    train_loader = DataLoader(train_subset, batch_size=8, shuffle=True)
-    val_loader = DataLoader(val_subset, batch_size=1, shuffle=False)
+        # Split data into training and validation sets for this fold
+        train_subset = torch.utils.data.Subset(train_set, train_index)
+        val_subset = torch.utils.data.Subset(train_set, val_index)
+        train_loader = DataLoader(train_subset, batch_size=8, shuffle=True)
+        val_loader = DataLoader(val_subset, batch_size=1, shuffle=False)
 
-    # Training loop for this fold
-    num_epochs = 100
-    for epoch in range(num_epochs):
-        total_loss = 0
-        for batch in train_loader:
-            mfcc = batch['mfcc'].to(device)
-            labels = batch['labels'].to(device)
-            # Forward pass
-            outputs = model(mfcc)
-            loss = criterion(outputs, labels)
+        # Training loop for this fold
+        num_epochs = 100
+        model.train()
+        for epoch in range(num_epochs):
+            total_loss = 0
+            for batch in train_loader:
+                mfcc = batch['mfcc'].to(device)
+                labels = batch['labels'].to(device)
+                # Forward pass
+                outputs = model(mfcc)
+                loss = criterion(outputs, labels)
 
-            # Backward pass and optimization
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+                # Backward pass and optimization
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
 
-            total_loss += loss.item()
+                total_loss += loss.item()
 
-        # Print average loss for the epoch
-        average_loss = total_loss / len(train_loader)
-        print(f"\tEpoch [{epoch+1}/{num_epochs}], Average Loss: {average_loss:.4f}")
+            # Print average loss for the epoch
+            average_loss = total_loss / len(train_loader)
+            print(f"\tEpoch [{epoch+1}/{num_epochs}], Average Loss: {average_loss:.4f}")
 
-    # Evaluation on validation set
+        # Evaluation on validation set
+        val_predictions = []
+        val_targets = []
+        model.eval()
+        with torch.no_grad():
+            for batch in val_loader:
+                mfcc = batch['mfcc'].to(device)
+                labels = batch['labels'].to(device)
+                outputs = model(mfcc)
+                predicted_labels = torch.sigmoid(outputs) > 0.5
+                val_predictions.extend(predicted_labels.cpu().numpy())
+                labels = labels > 0.5
+                val_targets.extend(labels.cpu().numpy())
+
+        # Compute evaluation metrics for this fold
+        model.eval()
+        val_predictions = np.array(val_predictions)
+        val_targets = np.array(val_targets)
+        f1 = f1_score(val_targets, val_predictions, average='weighted')
+        precision = precision_score(val_targets, val_predictions, average='weighted')
+        recall = recall_score(val_targets, val_predictions, average='weighted')
+        f1_scores.append(f1)
+        precision_scores.append(precision)
+        recall_scores.append(recall)
+
+
+        # Save validation scores to file
+
+        f.write(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}")
+
+    # Compute metrics on the test set
+    test_predictions = []
+    test_targets = []
     model.eval()
-    val_predictions = []
-    val_targets = []
+    p_label=[]
+    p_out=[]
     with torch.no_grad():
-        for batch in val_loader:
+        for batch in test_loader:
             mfcc = batch['mfcc'].to(device)
-            labels = batch['labels'].to(device)
+            labels = batch['labels'] > 0.5
             outputs = model(mfcc)
+            p_out.extend(outputs.detach().cpu().numpy())
+            p_label.extend(labels.detach().cpu().numpy())
             predicted_labels = torch.sigmoid(outputs) > 0.5
-            val_predictions.extend(predicted_labels.cpu().numpy())
-            labels = labels > 0.5
-            val_targets.extend(labels.cpu().numpy())
+            test_predictions.extend(predicted_labels.cpu().numpy())
+            test_targets.extend(labels.cpu().numpy())
 
-    # Compute evaluation metrics for this fold
-    val_predictions = np.array(val_predictions)
-    val_targets = np.array(val_targets)
-    f1 = f1_score(val_targets, val_predictions, average='weighted')
-    precision = precision_score(val_targets, val_predictions, average='weighted')
-    recall = recall_score(val_targets, val_predictions, average='weighted')
-    f1_scores.append(f1)
-    precision_scores.append(precision)
-    recall_scores.append(recall)
+    test_predictions = np.array(test_predictions)
+    test_targets = np.array(test_targets)
+    test_f1 = f1_score(test_targets, test_predictions, average='weighted')
+    test_precision = precision_score(test_targets, test_predictions, average='weighted')
+    test_recall = recall_score(test_targets, test_predictions, average='weighted')
 
-    # Compute precision-recall curve for this fold
-    precision_fold, recall_fold, _ = precision_recall_curve(val_targets, val_predictions)
-    pr_auc_fold = auc(recall_fold, precision_fold)
-    pr_auc_values.append(pr_auc_fold)
+    f.write(f"\nTest F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}")
 
-    # Save validation scores to file
-    with open('results/res_1.txt', 'a') as f:
-        f.write(f"{fold+1}\t{f1:.4f}\t{precision:.4f}\t{recall:.4f}\n")
+    # Save test scores to file
 
-    print(f"\tValidation F1 Score: {f1:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, PR AUC: {pr_auc_fold:.4f}")
+    p_out=np.array(p_out)
+    p_label=np.array(p_label)
+    thresholds = np.linspace(0, 1, 10)
+    for threshold in thresholds:
+        # Compute precision and recall for the current threshold
+        predicted_labels = (p_out >= threshold).astype(int)
+        precision = precision_score(p_label, predicted_labels, average='weighted')
+        recall = recall_score(p_label, predicted_labels, average='weighted')
+        precision_values.append(precision)
+        recall_values.append(recall)
+    plt.figure(figsize=(8, 6))
+    plt.plot(recall_values, precision_values)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve for Different Thresholds')
+    plt.grid(True)
+    plt.show()
+    # Save the figure
+    plt.savefig(f'result/precision_recall_curve_1_{fold}.png')
 
-# Compute metrics on the test set
-test_predictions = []
-test_targets = []
-with torch.no_grad():
-    for batch in test_loader:
-        mfcc = batch['mfcc'].to(device)
-        labels = batch['labels'] > 0.5
-        outputs = model(mfcc)
-        predicted_labels = torch.sigmoid(outputs) > 0.5
-        test_predictions.extend(predicted_labels.cpu().numpy())
-        test_targets.extend(labels.cpu().numpy())
+    # Plot F1 scores, accuracies, and precisions in one plot
+    plt.figure(figsize=(10, 5))
 
-test_predictions = np.array(test_predictions)
-test_targets = np.array(test_targets)
-test_f1 = f1_score(test_targets, test_predictions, average='weighted')
-test_precision = precision_score(test_targets, test_predictions, average='weighted')
-test_recall = recall_score(test_targets, test_predictions, average='weighted')
+    # Plot F1 scores
+    plt.plot(f1_scores, label='F1 Score', color='blue')
 
-print(f"\nTest F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}")
+    # Plot precisions
+    plt.plot(precision_scores, label='Precision', color='green')
 
-# Save test scores to file
-with open('results/res_1.txt', 'a') as f:
-    f.write("Test Scores:\n")
-    f.write(f"F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}\n")
+    # Plot recalls
+    plt.plot(recall_scores, label='Recall', color='red')
 
-print("plotting")
+    plt.title('Evaluation Metrics vs Fold')
+    plt.xlabel('Fold')
+    plt.ylabel('Score')
+    plt.grid(True)
+    plt.legend()
+    plt.savefig('result/evaluation_metrics_1.png')
+    plt.show()
 
-# Plotting Precision-Recall curve
-plt.figure(figsize=(10, 5))
-
-for fold in range(len(pr_auc_values)):
-    plt.plot(recall_values[fold], precision_values[fold], label=f'Fold {fold+1} (AUC = {pr_auc_values[fold]:.2f})')
-
-plt.xlabel('Recall')
-plt.ylabel('Precision')
-plt.title('Precision-Recall Curve')
-plt.legend(loc='lower left')
-plt.grid(True)
-plt.savefig('results/precision_recall_curve_1.png')
-plt.show()
-
-# Plot F1 scores, accuracies, and precisions in one plot
-plt.figure(figsize=(10, 5))
-
-# Plot F1 scores
-plt.plot(f1_scores, label='F1 Score', color='blue')
-
-# Plot precisions
-plt.plot(precision_scores, label='Precision', color='green')
-
-# Plot recalls
-plt.plot(recall_scores, label='Recall', color='red')
-
-plt.title('Evaluation Metrics vs Fold')
-plt.xlabel('Fold')
-plt.ylabel('Score')
-plt.grid(True)
-plt.legend()
-plt.savefig('results/evaluation_metrics_1.png')
-plt.show()
-
-# Save PR curve data
-np.save('results/precision_values_1.npy', np.array(precision_values))
-np.save('results/recall_values_1.npy', np.array(recall_values))
-np.save('results/pr_auc_values_1.npy', np.array(pr_auc_values))
-
-# Save F1, precision, recall, and PR curve plots
-torch.save(model,'./models/model1.pt')
+    # Save F1, precision, recall, and PR curve plots
+    torch.save(model,'./models/model1.pt')

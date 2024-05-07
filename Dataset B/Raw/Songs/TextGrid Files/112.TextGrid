@@ -1,0 +1,64 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 309.69358276643993 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "un" 
+        xmin = 0 
+        xmax = 309.69358276643993 
+        intervals: size = 10 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.3984555253280073 
+            text = "" 
+        intervals [2]:
+            xmin = 0.3984555253280073 
+            xmax = 38.520272108843535 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 38.520272108843535 
+            xmax = 100.29598639455783 
+            text = "Pallavi" 
+        intervals [4]:
+            xmin = 100.29598639455783 
+            xmax = 129.24454706014413 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 129.24454706014413 
+            xmax = 170.13768707482993 
+            text = "Anupallavi" 
+        intervals [6]:
+            xmin = 170.13768707482993 
+            xmax = 184.77352177785113 
+            text = "Pallavia" 
+        intervals [7]:
+            xmin = 184.77352177785113 
+            xmax = 219.8115508271821 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 219.8115508271821 
+            xmax = 260.88321995464855 
+            text = "Charanam" 
+        intervals [9]:
+            xmin = 260.88321995464855 
+            xmax = 306.6339680446361 
+            text = "Pallavi" 
+        intervals [10]:
+            xmin = 306.6339680446361 
+            xmax = 309.69358276643993 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "pear" 
+        xmin = 0 
+        xmax = 309.69358276643993 
+        intervals: size = 1 
+        intervals [1]:
+            xmin = 0 
+            xmax = 309.69358276643993 
+            text = "" 

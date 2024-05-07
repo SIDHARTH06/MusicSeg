@@ -1,0 +1,2 @@
+Fold [1/5]	Validation F1 Score: 0.3658, Precision: 0.2622, Recall: 1.0000Fold [2/5]	Validation F1 Score: 0.3611, Precision: 0.2609, Recall: 1.0000Fold [3/5]	Validation F1 Score: 0.3635, Precision: 0.2611, Recall: 1.0000Fold [4/5]	Validation F1 Score: 0.3558, Precision: 0.2530, Recall: 1.0000Fold [5/5]	Validation F1 Score: 0.3925, Precision: 0.2829, Recall: 1.0000
+Test F1 Score: 0.3773, Precision: 0.2718, Recall: 1.0000

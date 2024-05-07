@@ -1,0 +1,72 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 358.49031746031744 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "pachchai" 
+        xmin = 0 
+        xmax = 358.49031746031744 
+        intervals: size = 12 
+        intervals [1]:
+            xmin = 0 
+            xmax = 44.8748498852137 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 44.8748498852137 
+            xmax = 74.18223924051476 
+            text = "Pallavi" 
+        intervals [3]:
+            xmin = 74.18223924051476 
+            xmax = 96.67332790505787 
+            text = "BGM" 
+        intervals [4]:
+            xmin = 96.67332790505787 
+            xmax = 150.50877417279466 
+            text = "Anupallvi" 
+        intervals [5]:
+            xmin = 150.50877417279466 
+            xmax = 173.08297052154194 
+            text = "BGM" 
+        intervals [6]:
+            xmin = 173.08297052154194 
+            xmax = 211.17393223109028 
+            text = "Anupallavi" 
+        intervals [7]:
+            xmin = 211.17393223109028 
+            xmax = 233.0228344671202 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 233.0228344671202 
+            xmax = 270.4215197841222 
+            text = "Charanam" 
+        intervals [9]:
+            xmin = 270.4215197841222 
+            xmax = 292.9386910392377 
+            text = "BGM" 
+        intervals [10]:
+            xmin = 292.9386910392377 
+            xmax = 320.40333296056895 
+            text = "Pallavi" 
+        intervals [11]:
+            xmin = 320.40333296056895 
+            xmax = 354.93823129251706 
+            text = "BGM" 
+        intervals [12]:
+            xmin = 354.93823129251706 
+            xmax = 358.49031746031744 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "nirame" 
+        xmin = 0 
+        xmax = 358.49031746031744 
+        intervals: size = 1 
+        intervals [1]:
+            xmin = 0 
+            xmax = 358.49031746031744 
+            text = "" 

@@ -1,9 +1,9 @@
 import os
 import librosa
 import numpy as np
-INPUT_FOLDER = "/content/drive/MyDrive/Songs for annotation"
-OUTPUT_FOLDER = "/content/drive/MyDrive/processed_mod_5"
-def extract_mfcc(audio_file, sr=22050, n_mfcc=13, n_fft=2048, hop_length=512, duration=5):
+INPUT_FOLDER = "/workspace/Project_Final/MusicSeg/Dataset B/Raw/Songs/Songs"
+OUTPUT_FOLDER = "/workspace/Project_Final/MusicSeg/Dataset B/Processed/MFCC/1/"
+def extract_mfcc(audio_file, sr=22050, n_mfcc=13, n_fft=2048, hop_length=512, duration=1):
     # Load audio file
     y, _ = librosa.load(audio_file, sr=sr)
 

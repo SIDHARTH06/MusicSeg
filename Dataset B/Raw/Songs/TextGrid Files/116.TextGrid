@@ -1,0 +1,66 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 299.192358276644 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "Vaseegara" 
+        xmin = 0 
+        xmax = 299.192358276644 
+        intervals: size = 13 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.4480784462274873 
+            text = "" 
+        intervals [2]:
+            xmin = 0.4480784462274873 
+            xmax = 26.781609977324266 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 26.781609977324266 
+            xmax = 40.56027779260064 
+            text = "Pallavi" 
+        intervals [4]:
+            xmin = 40.56027779260064 
+            xmax = 43.61208742791866 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 43.61208742791866 
+            xmax = 71.19995464852609 
+            text = "Pallavi" 
+        intervals [6]:
+            xmin = 71.19995464852609 
+            xmax = 99.96954648526078 
+            text = "BGM" 
+        intervals [7]:
+            xmin = 99.96954648526078 
+            xmax = 140.11208616780044 
+            text = "Anupallavi" 
+        intervals [8]:
+            xmin = 140.11208616780044 
+            xmax = 153.38629870795472 
+            text = "Pallavi" 
+        intervals [9]:
+            xmin = 153.38629870795472 
+            xmax = 209.79927437641723 
+            text = "BGM" 
+        intervals [10]:
+            xmin = 209.79927437641723 
+            xmax = 250.31791383219954 
+            text = "Charanam" 
+        intervals [11]:
+            xmin = 250.31791383219954 
+            xmax = 277.98553006307196 
+            text = "Pallavi" 
+        intervals [12]:
+            xmin = 277.98553006307196 
+            xmax = 294.02762055435414 
+            text = "BGM" 
+        intervals [13]:
+            xmin = 294.02762055435414 
+            xmax = 299.192358276644 
+            text = "" 

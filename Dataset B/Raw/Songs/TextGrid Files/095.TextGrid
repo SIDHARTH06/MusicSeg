@@ -1,0 +1,46 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 288.35154195011336 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "Mary" 
+        xmin = 0 
+        xmax = 288.35154195011336 
+        intervals: size = 8 
+        intervals [1]:
+            xmin = 0 
+            xmax = 21.861135135180408 
+            text = "BGM" 
+        intervals [2]:
+            xmin = 21.861135135180408 
+            xmax = 69.64734693877551 
+            text = "Pallavi" 
+        intervals [3]:
+            xmin = 69.64734693877551 
+            xmax = 85.21301587301588 
+            text = "BGM" 
+        intervals [4]:
+            xmin = 85.21301587301588 
+            xmax = 130.24922527252207 
+            text = "Anupallavi" 
+        intervals [5]:
+            xmin = 130.24922527252207 
+            xmax = 161.5102057622644 
+            text = "Pallavi" 
+        intervals [6]:
+            xmin = 161.5102057622644 
+            xmax = 196.5963291921465 
+            text = "BGM" 
+        intervals [7]:
+            xmin = 196.5963291921465 
+            xmax = 243.64471655328796 
+            text = "Charanam" 
+        intervals [8]:
+            xmin = 243.64471655328796 
+            xmax = 288.35154195011336 
+            text = "Pallavi" 

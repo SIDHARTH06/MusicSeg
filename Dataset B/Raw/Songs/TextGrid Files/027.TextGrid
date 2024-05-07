@@ -1,0 +1,54 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 230.93897916666666 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "song" 
+        xmin = 0 
+        xmax = 230.93897916666666 
+        intervals: size = 10 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.2504646505213664 
+            text = "" 
+        intervals [2]:
+            xmin = 0.2504646505213664 
+            xmax = 16.55970597907975 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 16.55970597907975 
+            xmax = 82.52119568991648 
+            text = "Pallavi" 
+        intervals [4]:
+            xmin = 82.52119568991648 
+            xmax = 98.52635416970321 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 98.52635416970321 
+            xmax = 129.2114852859771 
+            text = "Anupallavi " 
+        intervals [6]:
+            xmin = 129.2114852859771 
+            xmax = 154.5790837392598 
+            text = "Pallavi" 
+        intervals [7]:
+            xmin = 154.5790837392598 
+            xmax = 170.62816847870576 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 170.62816847870576 
+            xmax = 201.1723966387151 
+            text = "Charanam" 
+        intervals [9]:
+            xmin = 201.1723966387151 
+            xmax = 226.606758253613 
+            text = "Pallavi" 
+        intervals [10]:
+            xmin = 226.606758253613 
+            xmax = 230.93897916666666 
+            text = "" 

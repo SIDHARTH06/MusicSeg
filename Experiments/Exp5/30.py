@@ -5,6 +5,7 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset, random_split
+import torch.nn.functional as F
 class FocalLoss(nn.Module):
     def __init__(self, gamma=2, alpha=0.25):
         super(FocalLoss, self).__init__()

@@ -1,0 +1,62 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 357.0535827664399 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "munbevaa" 
+        xmin = 0 
+        xmax = 357.0535827664399 
+        intervals: size = 12 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.9691191156720275 
+            text = "" 
+        intervals [2]:
+            xmin = 0.9691191156720275 
+            xmax = 35.86868480725624 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 35.86868480725624 
+            xmax = 105.22462585034015 
+            text = "Pallavi" 
+        intervals [4]:
+            xmin = 105.22462585034015 
+            xmax = 116.82715763669293 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 116.82715763669293 
+            xmax = 156.66629135771637 
+            text = "Anupallavi" 
+        intervals [6]:
+            xmin = 156.66629135771637 
+            xmax = 186.40850340136055 
+            text = "Pallavi" 
+        intervals [7]:
+            xmin = 186.40850340136055 
+            xmax = 211.7320913947234 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 211.7320913947234 
+            xmax = 251.85510633470102 
+            text = " Charanam" 
+        intervals [9]:
+            xmin = 251.85510633470102 
+            xmax = 293.53645595769024 
+            text = "Pallavi" 
+        intervals [10]:
+            xmin = 293.53645595769024 
+            xmax = 320.8185487528345 
+            text = "BGM" 
+        intervals [11]:
+            xmin = 320.8185487528345 
+            xmax = 348.4100202909236 
+            text = "Pallavi" 
+        intervals [12]:
+            xmin = 348.4100202909236 
+            xmax = 357.0535827664399 
+            text = "" 

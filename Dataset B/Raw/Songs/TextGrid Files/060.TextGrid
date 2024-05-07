@@ -1,0 +1,70 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 256.6388888888889 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "song" 
+        xmin = 0 
+        xmax = 256.6388888888889 
+        intervals: size = 14 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.6256128222792134 
+            text = "" 
+        intervals [2]:
+            xmin = 0.6256128222792134 
+            xmax = 15.244748594489076 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 15.244748594489076 
+            xmax = 60.44586123672422 
+            text = "Pallavi" 
+        intervals [4]:
+            xmin = 60.44586123672422 
+            xmax = 71.25266644716268 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 71.25266644716268 
+            xmax = 101.87507808175464 
+            text = "Anupallavi" 
+        intervals [6]:
+            xmin = 101.87507808175464 
+            xmax = 106.71373600311533 
+            text = "BGM" 
+        intervals [7]:
+            xmin = 106.71373600311533 
+            xmax = 127.15884938226294 
+            text = "Pallavi" 
+        intervals [8]:
+            xmin = 127.15884938226294 
+            xmax = 137.19968462815504 
+            text = "BGM" 
+        intervals [9]:
+            xmin = 137.19968462815504 
+            xmax = 156.5008249526612 
+            text = "Charanam" 
+        intervals [10]:
+            xmin = 156.5008249526612 
+            xmax = 195.5739385171921 
+            text = "" 
+        intervals [11]:
+            xmin = 195.5739385171921 
+            xmax = 220.95862629846633 
+            text = "Charanam" 
+        intervals [12]:
+            xmin = 220.95862629846633 
+            xmax = 225.97184430383237 
+            text = "BGM" 
+        intervals [13]:
+            xmin = 225.97184430383237 
+            xmax = 245.89397341947634 
+            text = "Pallavi" 
+        intervals [14]:
+            xmin = 245.89397341947634 
+            xmax = 256.6388888888889 
+            text = "BGM" 

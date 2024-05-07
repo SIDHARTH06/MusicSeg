@@ -1,0 +1,56 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 181.85031746031746 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "katchi" 
+        xmin = 0 
+        xmax = 181.85031746031746 
+        intervals: size = 8 
+        intervals [1]:
+            xmin = 0 
+            xmax = 9.671738868418334 
+            text = "" 
+        intervals [2]:
+            xmin = 9.671738868418334 
+            xmax = 28.885544287867933 
+            text = "BGM" 
+        intervals [3]:
+            xmin = 28.885544287867933 
+            xmax = 67.57875283446712 
+            text = "Pallavi" 
+        intervals [4]:
+            xmin = 67.57875283446712 
+            xmax = 96.53511974042526 
+            text = "BGM" 
+        intervals [5]:
+            xmin = 96.53511974042526 
+            xmax = 116.23628117913833 
+            text = "Charanam" 
+        intervals [6]:
+            xmin = 116.23628117913833 
+            xmax = 156.16755102040815 
+            text = "Pallavi" 
+        intervals [7]:
+            xmin = 156.16755102040815 
+            xmax = 173.61415522947925 
+            text = "BGM" 
+        intervals [8]:
+            xmin = 173.61415522947925 
+            xmax = 181.85031746031746 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "sera" 
+        xmin = 0 
+        xmax = 181.85031746031746 
+        intervals: size = 1 
+        intervals [1]:
+            xmin = 0 
+            xmax = 181.85031746031746 
+            text = "" 
